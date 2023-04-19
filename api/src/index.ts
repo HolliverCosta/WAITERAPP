@@ -6,14 +6,19 @@ import { Server } from 'socket.io';
 
 import { router } from './routes';
 
+import dotenv from 'dotenv';
+dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
 export const io = new Server(server);
 
-mongoose.connect('mongodb://localhost:27017')
+
+const mongoUrl = process.env.MONGO_URI || 'mongodb://api-db:27017/myapp';
+console.log(mongoUrl);
+mongoose.connect(mongoUrl)
   .then(() => {
-    const port = 3001;
+    const port = 5000;
 
     app.use((req, res, next) => {
       res.setHeader('Access-Control-Allow-Origin', '*');
@@ -30,6 +35,6 @@ mongoose.connect('mongodb://localhost:27017')
     });
 
   })
-  .catch(() => console.log('erro ao conectar com o mongo'));
+  .catch(() => console.log('erro ao conectar com o mongo', process.env.MONGO_URI));
 
 

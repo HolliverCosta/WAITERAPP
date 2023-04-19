@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+        - name: api
+          image: docker.io/hollivercosta/api-api:latest
+          ports:
+            - containerPort: 5000
+          env:
+            - name: MONGO_URI
+              # value: mongodb+srv://root:mongo@waiterapp.3jtocml.mongodb.net/?retryWrites=true&w=majority
+              value: mongodb://root:password@mongo-service.svc.cluster.local:27019
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payment
+  template:
+    metadata:
+      labels:
+        app: payment
+    spec:
+      containers:
+        - name: payment
+          image: docker.io/hollivercosta/payment-payment:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: MONGO_URI
+              value: mongodb+srv://root:password@waiterapp.3jtocml.mongodb.net/?retryWrites=true&w=majority
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: login
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: login
+  template:
+    metadata:
+      labels:
+        app: login
+    spec:
+      containers:
+        - name: login
+          image: docker.io/hollivercosta/login-login:latest
+          ports:
+            - containerPort: 4000
+          env:
+            - name: MONGO_URI
+              value: mongodb+srv://root:mongo@waiterapp.3jtocml.mongodb.net/?retryWrites=true&w=majority
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-api
+spec:
+  selector:
+    matchLabels:
+      app: mongo-api
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mongo-api
+    spec:
+      containers:
+        - name: mongo-api
+          image: mongo:latest
+          ports:
+            - containerPort: 27019
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: root
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              value: password

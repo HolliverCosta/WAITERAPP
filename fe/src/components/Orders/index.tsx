@@ -12,7 +12,7 @@ export function Orders() {
   const [orders, setOrders] = useState<Order[]>([]);
 
   useEffect(() => {
-    const io = socketIo("http://localhost:3001", {
+    const io = socketIo("http://192.168.49.2:30080", {
       transports: ["websocket"],
     });
     io.on("orders@new", (order) => {
@@ -24,7 +24,7 @@ export function Orders() {
     api.get("/orders").then(({ data }) => {
       setOrders(data);
     });
-  }, [orders]);
+  }, []);
 
   const waiting = orders.filter((order) => order.status === "WAITING");
 

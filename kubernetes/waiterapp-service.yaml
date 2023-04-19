@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-service
+spec:
+  selector:
+    app: api
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 5000
+      nodePort: 30080
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-service
+spec:
+  selector:
+    app: payment
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 3000
+      nodePort: 30081
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: login-service
+spec:
+  selector:
+    app: login
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 4000
+      nodePort: 30082
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-service
+spec:
+  selector:
+    app: mongo-api
+  ports:
+    - protocol: TCP
+      port: 27019
+      targetPort: 27019
+  type: NodePort

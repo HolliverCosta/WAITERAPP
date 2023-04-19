@@ -1,0 +1,13 @@
+version: "3"
+
+services:
+  payment:
+    build: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - payment-db
+  payment-db:
+    image: mongo
+    ports:
+      - "27017:27017"

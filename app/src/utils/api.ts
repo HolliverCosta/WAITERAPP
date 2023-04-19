@@ -1,5 +1,14 @@
 import axios from "axios";
 
+export const baseUrl = "http://192.168.49.2:30080";
+
+export const paymentBaseUrl = "http://192.168.49.2:30081/";
+
+
 export const api = axios.create({
-    baseURL: "http://192.168.0.110:3001",
+    baseURL: baseUrl,
+});
+
+export const apiPayment = axios.create({
+    baseURL: paymentBaseUrl,
 });

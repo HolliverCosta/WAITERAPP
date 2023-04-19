@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { FlatList, TouchableOpacity } from "react-native";
+import { baseUrl } from "../../utils/api";
 
 import { Button } from "../Button";
+import { PaymentModal } from "../PaymentModal";
 import { OrderConfirmedModal } from "../OrderConfirmedModal";
 import { Text } from "../Text";
 import { MinusCircle } from "../Icons/MinusCircle";
@@ -39,6 +41,8 @@ export function Cart({
     selectedTable,
 }: CartProps) {
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [paymentModalVisible, setPaymentModalVisible] = useState(false);
+
     const [isLoading, setIsLoading] = useState(false);
 
     const total = cartItem.reduce((acc, cartItem) => {
@@ -57,17 +61,25 @@ export function Cart({
 
         await api.post("/orders", payload);
         setIsLoading(false);
-
+        setPaymentModalVisible(false);
         setIsModalVisible(true);
+    }
+
+    async function handlePaymentOrder() {
+        setPaymentModalVisible(true);
     }
 
     function handleOK() {
         setIsModalVisible(false);
         onConfirmOrder();
     }
-
     return (
         <>
+            <PaymentModal
+                visible={paymentModalVisible}
+                setVisible={setPaymentModalVisible}
+                onConfirmedOrder={handleConfirmOrder}
+            />
             <OrderConfirmedModal visible={isModalVisible} onOK={handleOK} />
             {cartItem.length > 0 && (
                 <FlatList
@@ -80,7 +92,7 @@ export function Cart({
                             <ProductContainer>
                                 <Image
                                     source={{
-                                        uri: `http://192.168.0.110:3001/uploads/${cartItem.product.imagePath}`,
+                                        uri: `${baseUrl}/uploads/${cartItem.product.imagePath}`,
                                     }}
                                 />
                                 <QuantityContainer>
@@ -134,11 +146,11 @@ export function Cart({
                     )}
                 </TotalContainer>
                 <Button
-                    onPress={handleConfirmOrder}
+                    onPress={handlePaymentOrder}
                     disabled={cartItem.length === 0}
                     loading={isLoading}
                 >
-                    Confirmar pedido
+                    Ir para pagamento
                 </Button>
             </Summary>
         </>
